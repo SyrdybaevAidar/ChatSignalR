@@ -1,7 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using ChatMVCApplication.DataAccess.Entities;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace ChatApplication.DataAccess.Entities.Configurations
+namespace ChatMVCApplication.DataAccess.Entities.Configurations
 {
     public class ChatConfiguration : IEntityTypeConfiguration<Chat>
     {

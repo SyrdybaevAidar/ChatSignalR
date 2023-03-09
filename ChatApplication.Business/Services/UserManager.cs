@@ -1,19 +1,12 @@
-﻿using ChatApplication.Business.Models;
-using ChatApplication.Business.UnitOfWork;
-using ChatApplication.DataAccess.Entities;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using ChatMVCApplication.Business.UnitOfWork;
 
-namespace ChatApplication.Business.Services
+namespace ChatMVCApplication.Business.Services
 {
     public class UserManager
     {
         private readonly IUnitOfWork _unitOfWork;
-        public UserManager(IUnitOfWork unitOfWork) { 
+        public UserManager(IUnitOfWork unitOfWork)
+        {
             _unitOfWork = unitOfWork;
         }
 

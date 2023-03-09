@@ -1,15 +1,10 @@
-﻿using ChatApplication.DataAccess.Entities;
-using ChatApplication.DataAccess.Entities.Configurations;
+﻿using ChatMVCApplication.DataAccess.Entities;
+using ChatMVCApplication.DataAccess.Entities.Configurations;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace ChatApplication.DataAccess.Context
+namespace ChatMVCApplication.DataAccess.Context
 {
     public class ChatDbContext : IdentityDbContext<User, IdentityRole<int>, int>
     {

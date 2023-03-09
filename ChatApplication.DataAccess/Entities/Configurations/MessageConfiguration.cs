@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ChatApplication.DataAccess.Entities.Configurations
+namespace ChatMVCApplication.DataAccess.Entities.Configurations
 {
     public class MessageConfiguration : IEntityTypeConfiguration<Message>
     {
