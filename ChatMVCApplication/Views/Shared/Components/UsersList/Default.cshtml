@@ -7,7 +7,8 @@
             <li class="clearfix">
                 <div class="about">
                     <div class="name">@user.Email</div>
-                    <div class="status"> <i id="@user.Id" class="fa fa-circle offline"></i>@user.LastMessage</div>
+                    <div class="status"> <i id="@user.Id" class="fa fa-circle offline"></i><span id="last-Message-@user.Id" span>user.LastMessage</span></div>
+                    <div id="count-@user.Id" class="count">0</div>
                     <div><a href='@Url.Action("Details", "Chat", new { toUserId = user.Id}, null)'>Открыть чат</a></div>
                 </div>
             </li>

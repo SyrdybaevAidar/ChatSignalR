@@ -20,8 +20,8 @@ namespace ChatMVCApplication.Hubs
         }
         public async Task SendPrivateMessage(int toUserId, string message)
         {   
-            await Clients.Group(toUserId.ToString()).SendAsync("ReceiveMessage", message);
             var currentUserId = Context.User!.FindFirstValue(ClaimTypes.NameIdentifier)!;
+            await Clients.Group(toUserId.ToString()).SendAsync("ReceiveMessage", message, int.Parse(currentUserId));
             await _chatService.SendMessageAsync(int.Parse(currentUserId), toUserId, message);
         }
     }

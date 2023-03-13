@@ -1,11 +1,21 @@
 ﻿"use strict";
 
 var connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
-
+let currentUserId = 0;
+function SetCurrentUserId(userId) {
+    currentUserId = userId;
+}
 //Disable send button until connection is established
 
-connection.on("ReceiveMessage", function (message) {
-    appendMessageText(message, false);
+connection.on("ReceiveMessage", function (message, fromUserId) {
+    if (fromUserId == currentUserId) {
+        appendMessageText(message, false);
+    } else {
+        let item = document.getElementById("count-" + fromUserId);
+        let textItem = document.getElementById("lastMessage-" + fromUserId);
+        item.innerText = (+item.innerText) + 1;
+        textItem.innerText = message;
+    }
 });
 
 connection.start().then(function () {
@@ -55,3 +65,4 @@ function appendMessageText(text, isMine) {
     document.getElementById("messages").appendChild(li);
     document.getElementById("messageInput").value = "";
 }
+

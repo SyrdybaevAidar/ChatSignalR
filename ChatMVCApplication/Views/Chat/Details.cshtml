@@ -64,6 +64,9 @@
                     </div>
                 </div>
 <script src="~/js/chat.js"></script>
+<script>
+    SetCurrentUserId(@Model.ToUserId);
+</script>
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
