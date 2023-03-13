@@ -19,7 +19,7 @@ namespace ChatMVCApplication.Business.Services
             _mapper = mapper;
         }
 
-        public async Task<PrivateChatDto> GetMessagesByUserIdAsync(int currentUserId, int toUserId) {
+        public async Task<PrivateChatDto> GetMessagesByUserIdAsync(int currentUserId, int toUserId, int page, int messagecount) {
             var messages = await _uow.GetRepository<Message>()
                 .Where(x => (x.UserId == currentUserId || x.ToUserId == currentUserId) && (x.ToUserId == toUserId || x.UserId == toUserId))
                 .OrderByDescending(x => x.CreateDate)
@@ -28,10 +28,18 @@ namespace ChatMVCApplication.Business.Services
                     IsMineMessage = currentUserId == x.UserId,
                     CreateDate = x.CreateDate,
                     Text= x.Text
-                }).Take(5)
+                })
+                .Skip((page-1) * messagecount)
+                .Take(messagecount)
                 .ToListAsync();
 
+            var toUserName = await _uow.GetRepository<User>()
+                .Where(x => x.Id == toUserId)
+                .Select(x => x.Email)
+                .FirstAsync();
+
             return new PrivateChatDto() { 
+                UserName = toUserName,
                 ToUserId = toUserId,
                 Messages = messages
             };
@@ -49,10 +57,23 @@ namespace ChatMVCApplication.Business.Services
 
         public async Task<List<UserDto>> GetAllUsers(int currentUserId) { 
             var users = await _uow.GetRepository<User>()
+                .Where(x => x.Id != currentUserId)
                 .Include(x => x.Messages.Where(x => x.ToUserId == currentUserId || x.UserId == currentUserId).OrderByDescending(x => x.CreateDate).Take(1))
                 .ToListAsync();
 
             return _mapper.Map<List<UserDto>>(users);
+        }
+
+        public async Task MarkedMessageToReadAsync(int currentUserId, List<int> messageIds) {
+            var messages = await _uow.GetRepository<Message>()
+                .Where(x => x.ToUserId == currentUserId && messageIds.Contains(x.Id))
+                .ToListAsync();
+
+            messages.ForEach(message => { 
+                message.IsRead = true;
+            });
+            _uow.GetRepository<Message>().UpdateRange(messages);
+            await _uow.SaveChangesAsync();
         }
     }
 }

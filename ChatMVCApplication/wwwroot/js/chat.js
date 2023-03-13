@@ -9,12 +9,38 @@ function SetCurrentUserId(userId) {
 
 connection.on("ReceiveMessage", function (message, fromUserId) {
     if (fromUserId == currentUserId) {
-        appendMessageText(message, false);
+        let li = appendMessageText(message, false);
+        document.getElementById("messages").appendChild(li);
+        document.getElementById("messageInput").value = "";
     } else {
         let item = document.getElementById("count-" + fromUserId);
-        let textItem = document.getElementById("lastMessage-" + fromUserId);
+        if (item == null) {
+            countData = document.createElement("div");
+        }
         item.innerText = (+item.innerText) + 1;
         textItem.innerText = message;
+    }
+});
+
+function getMessages(event, toUserId) {
+    if (toUserId != 0) {
+        connection.invoke("GetMessages", toUserId, +event.value).catch(function (err) {
+            return console.error(err.toString());
+        });
+    }
+}
+
+connection.on("ReturnMessages", function (messages, page) {
+    let messagesDiv = document.getElementById("messages");
+    let firstMessage = messagesDiv.firstChild;
+
+    let paginationButton = document.getElementById("pagination-button");
+    paginationButton.value = page;
+
+    for(const message of messages){
+        let li = appendMessageText(message.text, message.isMineMessage);
+        messagesDiv.insertBefore(li, firstMessage);
+        firstMessage = li;
     }
 });
 
@@ -28,7 +54,9 @@ connection.start().then(function () {
     var message = document.getElementById("messageInput").value;
 
     if (toUserId != 0) {
-        appendMessageText(message, true);
+        let li = appendMessageText(message, true);
+        document.getElementById("messages").appendChild(li);
+        document.getElementById("messageInput").value = "";
         connection.invoke("SendPrivateMessage", toUserId, message).catch(function (err) {
             return console.error(err.toString());
         });
@@ -43,9 +71,9 @@ function appendMessageText(text, isMine) {
     messageDataSpan.innerText = currendDate.getHours() + ":" + currendDate.getMinutes();
     var messageData = document.createElement("div");
     if (isMine) {
-        messageData.className = "message-data";
+        messageData.className = "message-data content-left";
     } else {
-        messageData.className = "message-data text-right";
+        messageData.className = "message-data content-right";
     }
     messageData.appendChild(messageDataSpan);
 
@@ -61,8 +89,6 @@ function appendMessageText(text, isMine) {
     li.className = "clearfix";
     li.appendChild(messageData);
     li.appendChild(messageDiv);
-
-    document.getElementById("messages").appendChild(li);
-    document.getElementById("messageInput").value = "";
+    return li;
 }
 

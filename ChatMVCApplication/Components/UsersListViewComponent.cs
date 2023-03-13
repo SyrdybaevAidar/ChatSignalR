@@ -1,5 +1,4 @@
 ﻿using ChatMVCApplication.Business.Services.Interfaces;
-using ChatMVCApplication.DataAccess.Entities;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 

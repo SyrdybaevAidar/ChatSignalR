@@ -11,11 +11,15 @@ connection.start().then(function () {
 connection.on("online", function (userId) {
     let item = document.getElementById(userId);
     item.className = "fa fa-circle online";
+    let statusName = document.getElementById("user-status-" + userId);
+    statusName.innerText = "online";
 });
 
 connection.on("offline", function (userId) {
     let item = document.getElementById(userId);
     item.className = "fa fa-circle offline";
+    let statusName = document.getElementById("user-status-" + userId);
+    statusName.innerText = "offline";
 });
 
 connection.on("GetAllOnlineUserIds", function (userIds) {
