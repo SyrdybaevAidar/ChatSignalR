@@ -1,37 +1,28 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using ChatMVCApplication.Business.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
+using System.Security.Claims;
 
 namespace ChatMVCApplication.Hubs
 {
-    //[Authorize]
+    [Authorize]
     public class ChatHub : Hub
-    {
+    {   
+        private readonly IChatService _chatService;
+        public ChatHub(IChatService chatService) { 
+            _chatService = chatService;
+        }
         public override async Task OnConnectedAsync()
         {
+            var currentUserId = Context.User!.FindFirstValue(ClaimTypes.NameIdentifier)!;
+            await Groups.AddToGroupAsync(Context.ConnectionId, currentUserId);
             await base.OnConnectedAsync();
         }
-
-        public async Task CreatePrivateChat(int toUser) {
-            await Groups.AddToGroupAsync(Context.ConnectionId, "Test");
-            //createChat
-        }
-
-        public async Task CreateGroupChat(List<int> userIds)
-        {
-            await Groups.AddToGroupAsync(Context.ConnectionId, "Test");
-            //createChat
-        }
-
-        public async Task GetGroupChat(int chatId) { 
-            
-        }
-        public async Task SendPrivateMessage(string toUser, string message)
-        {
-            await Clients.Group(toUser).SendAsync("ReceiveMessage", toUser, message);
-        }
-
-        public async Task SendGroupMessage(int chatId, string message) { 
-            
+        public async Task SendPrivateMessage(int toUserId, string message)
+        {   
+            await Clients.Group(toUserId.ToString()).SendAsync("ReceiveMessage", message);
+            var currentUserId = Context.User!.FindFirstValue(ClaimTypes.NameIdentifier)!;
+            await _chatService.SendMessageAsync(int.Parse(currentUserId), toUserId, message);
         }
     }
 }

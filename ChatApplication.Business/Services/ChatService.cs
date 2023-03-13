@@ -1,15 +1,11 @@
 ﻿using AutoMapper;
+using ChatApplication.DataAccess.Entities;
 using ChatMVCApplication.Business.Models;
 using ChatMVCApplication.Business.Services.Interfaces;
-using ChatMVCApplication.Business.UnitOfWork;
+using ChatMVCApplication.Business.Uow;
 using ChatMVCApplication.DataAccess.Entities;
 using ChatMVCApplication.DataAccess.Types;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ChatMVCApplication.Business.Services
 {
@@ -23,35 +19,40 @@ namespace ChatMVCApplication.Business.Services
             _mapper = mapper;
         }
 
-        public async Task<PrivateChatDto> GetPrivateByIdAsync(int chatId) { 
-            var chat = await _uow.GetRepository<Chat>()
-                .Where(x => x.Id == chatId)
-                .Include(x => x.Messages.OrderByDescending(x => x.CreateDate).Take(5).OrderBy(x => x.User))
-                .Include(x => x.Users)
-                .FirstAsync();
+        public async Task<PrivateChatDto> GetMessagesByUserIdAsync(int currentUserId, int toUserId) {
+            var messages = await _uow.GetRepository<Message>()
+                .Where(x => (x.UserId == currentUserId || x.ToUserId == currentUserId) && (x.ToUserId == toUserId || x.UserId == toUserId))
+                .OrderByDescending(x => x.CreateDate)
+                .Select(x => new MessageDto() { 
+                    Id = x.Id,
+                    IsMineMessage = currentUserId == x.UserId,
+                    CreateDate = x.CreateDate,
+                    Text= x.Text
+                }).Take(5)
+                .ToListAsync();
 
-            return _mapper.Map<PrivateChatDto>(chat);
+            return new PrivateChatDto() { 
+                ToUserId = toUserId,
+                Messages = messages
+            };
         }
 
-        public async Task<PrivateChatDto> CreatePrivateChat(string title, int createUserId, int receiveUserId) {
-            var users = await _uow.GetRepository<User>()
-                .Where(x => x.Id == createUserId || x.Id == receiveUserId)
-                .ToListAsync();
-            var existChat = await _uow.GetRepository<Chat>()
-                .Include(x => x.Messages)
-                .Include(x => x.Users)
-                .FirstOrDefaultAsync(x => x.Users.Any(x => x.Id == createUserId && x.Id == receiveUserId));
+        public async Task<MessageDto> SendMessageAsync(int currentUserId, int toUserId, string text) {
 
-            if (existChat != null) {
-                return _mapper.Map<PrivateChatDto>(existChat);
-            }
-            var chat = await _uow.GetRepository<Chat>().AddAsync(new Chat(title, ChatType.Private) {
-                Users = users
+            var messageEntry = await _uow.GetRepository<Message>().AddAsync(new(text, false, currentUserId) { 
+                ToUserId = toUserId
             });
 
             await _uow.SaveChangesAsync();
+            return _mapper.Map<MessageDto>(messageEntry.Entity);
+        }
 
-            return _mapper.Map<PrivateChatDto>(chat);
+        public async Task<List<UserDto>> GetAllUsers(int currentUserId) { 
+            var users = await _uow.GetRepository<User>()
+                .Include(x => x.Messages.Where(x => x.ToUserId == currentUserId || x.UserId == currentUserId).OrderByDescending(x => x.CreateDate).Take(1))
+                .ToListAsync();
+
+            return _mapper.Map<List<UserDto>>(users);
         }
     }
 }

@@ -8,7 +8,11 @@ namespace ChatMVCApplication.Business.Models
 {
     public class PrivateChatDto
     {
-        public string ChatId { get; set; }
+        public int ToUserId { get; set; }
         public List<MessageDto> Messages { get; set; }
+        public PrivateChatDto()
+        {
+            Messages = new();
+        }
     }
 }

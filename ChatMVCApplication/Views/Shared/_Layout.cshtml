@@ -1,11 +1,15 @@
-﻿<!DOCTYPE html>
+﻿@using ChatMVCApplication.DataAccess.Entities;
+@using Microsoft.AspNetCore.Identity;
+@inject SignInManager<User> SignInManager
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - ChatMVCApplication</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    @await RenderSectionAsync("Styles", required: false)
+    <link rel="stylesheet" href="~/css/chat.css" />
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
 </head>
 <body>
     <header>
@@ -30,10 +34,14 @@
             </div>
         </nav>
     </header>
-    <div class="container">
-        <main>
+    <div class="">
+        <div class="card chat-app">
+            @if (SignInManager.IsSignedIn(User))
+            {
+                @await Component.InvokeAsync("UsersList")
+            }
             @RenderBody()
-        </main>
+        </div>
     </div>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

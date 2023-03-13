@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using ChatMVCApplication.DataAccess.Context;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using System;
 using System.Collections.Generic;
@@ -6,13 +7,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ChatMVCApplication.Business.UnitOfWork
+namespace ChatMVCApplication.Business.Uow
 {
     public class UnitOfWork : IUnitOfWork
     {
-        private readonly DbContext _context;
+        private readonly ChatDbContext _context;
         private bool _disposed;
-        public UnitOfWork(DbContext dbContext)
+        public UnitOfWork(ChatDbContext dbContext)
         {
             _context = dbContext;
         }
@@ -20,7 +21,8 @@ namespace ChatMVCApplication.Business.UnitOfWork
         public DbSet<T> GetRepository<T>() where T : class
             => _context.Set<T>();
 
-        public async Task SaveChangesAsync(CancellationToken token = default) { 
+        public async Task SaveChangesAsync(CancellationToken token = default)
+        {
             await _context.SaveChangesAsync(token);
         }
 

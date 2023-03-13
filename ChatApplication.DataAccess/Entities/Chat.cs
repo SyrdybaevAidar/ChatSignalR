@@ -1,4 +1,5 @@
-﻿using ChatApplication.DataAccess.Types;
+﻿using ChatMVCApplication.DataAccess.Entities;
+using ChatMVCApplication.DataAccess.Types;
 
 namespace ChatApplication.DataAccess.Entities
 {

@@ -1,22 +1,24 @@
 ﻿using ChatMVCApplication.Business.Models;
+using ChatMVCApplication.Business.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace ChatMVCApplication.Controllers
 {
+    [Authorize]
     public class ChatController : Controller
     {
-        public IActionResult Index()
+        private readonly IChatService _chatService;
+        private int CurrentUserId => int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out int id) ? id : 0;
+        public ChatController(IChatService chatService)
         {
-            return View();
+            _chatService = chatService;
         }
 
-        public IActionResult Details(int id)
-        {
-            return View(new PrivateChatDto() { ChatId = 1.ToString() });
-        }
-
-        public IActionResult Titles() { 
-            return View();
+        public async Task<IActionResult> Details(int toUserId) {
+            var messages = await _chatService.GetMessagesByUserIdAsync(CurrentUserId, toUserId);
+            return View(messages);
         }
     }
 }

@@ -8,7 +8,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace ChatApplication.DataAccess.Migrations
+namespace ChatMVCApplication.DataAccess.Migrations
 {
     [DbContext(typeof(ChatDbContext))]
     partial class ChatDbContextModelSnapshot : ModelSnapshot
@@ -51,7 +51,7 @@ namespace ChatApplication.DataAccess.Migrations
                     b.ToTable("chats", (string)null);
                 });
 
-            modelBuilder.Entity("ChatApplication.DataAccess.Entities.Message", b =>
+            modelBuilder.Entity("ChatMVCApplication.DataAccess.Entities.Message", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -60,9 +60,8 @@ namespace ChatApplication.DataAccess.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("ChatId")
-                        .HasColumnType("int")
-                        .HasColumnName("chat_id");
+                    b.Property<int?>("ChatId")
+                        .HasColumnType("int");
 
                     b.Property<DateTimeOffset>("CreateDate")
                         .HasColumnType("TIME WITH TIME ZONE")
@@ -76,6 +75,9 @@ namespace ChatApplication.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int?>("ToUserId")
+                        .HasColumnType("int");
+
                     b.Property<int>("UserId")
                         .HasColumnType("int")
                         .HasColumnName("user_id");
@@ -84,12 +86,14 @@ namespace ChatApplication.DataAccess.Migrations
 
                     b.HasIndex("ChatId");
 
+                    b.HasIndex("ToUserId");
+
                     b.HasIndex("UserId");
 
                     b.ToTable("messages", (string)null);
                 });
 
-            modelBuilder.Entity("ChatApplication.DataAccess.Entities.User", b =>
+            modelBuilder.Entity("ChatMVCApplication.DataAccess.Entities.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -159,13 +163,13 @@ namespace ChatApplication.DataAccess.Migrations
 
             modelBuilder.Entity("ChatUser", b =>
                 {
-                    b.Property<int>("ChatsId")
+                    b.Property<int>("ChatId")
                         .HasColumnType("int");
 
                     b.Property<int>("UsersId")
                         .HasColumnType("int");
 
-                    b.HasKey("ChatsId", "UsersId");
+                    b.HasKey("ChatId", "UsersId");
 
                     b.HasIndex("UsersId");
 
@@ -310,7 +314,7 @@ namespace ChatApplication.DataAccess.Migrations
 
             modelBuilder.Entity("ChatApplication.DataAccess.Entities.Chat", b =>
                 {
-                    b.HasOne("ChatApplication.DataAccess.Entities.User", "User")
+                    b.HasOne("ChatMVCApplication.DataAccess.Entities.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict);
@@ -318,21 +322,23 @@ namespace ChatApplication.DataAccess.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("ChatApplication.DataAccess.Entities.Message", b =>
+            modelBuilder.Entity("ChatMVCApplication.DataAccess.Entities.Message", b =>
                 {
-                    b.HasOne("ChatApplication.DataAccess.Entities.Chat", "Chat")
+                    b.HasOne("ChatApplication.DataAccess.Entities.Chat", null)
                         .WithMany("Messages")
-                        .HasForeignKey("ChatId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .HasForeignKey("ChatId");
 
-                    b.HasOne("ChatApplication.DataAccess.Entities.User", "User")
+                    b.HasOne("ChatMVCApplication.DataAccess.Entities.User", "ToUser")
+                        .WithMany()
+                        .HasForeignKey("ToUserId");
+
+                    b.HasOne("ChatMVCApplication.DataAccess.Entities.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("Chat");
+                    b.Navigation("ToUser");
 
                     b.Navigation("User");
                 });
@@ -341,11 +347,11 @@ namespace ChatApplication.DataAccess.Migrations
                 {
                     b.HasOne("ChatApplication.DataAccess.Entities.Chat", null)
                         .WithMany()
-                        .HasForeignKey("ChatsId")
+                        .HasForeignKey("ChatId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ChatApplication.DataAccess.Entities.User", null)
+                    b.HasOne("ChatMVCApplication.DataAccess.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UsersId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -363,7 +369,7 @@ namespace ChatApplication.DataAccess.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<int>", b =>
                 {
-                    b.HasOne("ChatApplication.DataAccess.Entities.User", null)
+                    b.HasOne("ChatMVCApplication.DataAccess.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -372,7 +378,7 @@ namespace ChatApplication.DataAccess.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<int>", b =>
                 {
-                    b.HasOne("ChatApplication.DataAccess.Entities.User", null)
+                    b.HasOne("ChatMVCApplication.DataAccess.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -387,7 +393,7 @@ namespace ChatApplication.DataAccess.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ChatApplication.DataAccess.Entities.User", null)
+                    b.HasOne("ChatMVCApplication.DataAccess.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -396,7 +402,7 @@ namespace ChatApplication.DataAccess.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<int>", b =>
                 {
-                    b.HasOne("ChatApplication.DataAccess.Entities.User", null)
+                    b.HasOne("ChatMVCApplication.DataAccess.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)

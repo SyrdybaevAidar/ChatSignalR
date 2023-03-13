@@ -8,7 +8,9 @@
         public bool IsRead { get; set; }
         public int UserId { get; set; }
         public User? User { get; set; }
-        public Message(string text, bool isRead, int userId, int chatId)
+        public int? ToUserId { get; set; }
+        public User? ToUser { get; set; }
+        public Message(string text, bool isRead, int userId)
         {
             CreateDate = DateTimeOffset.UtcNow;
             Text = text;

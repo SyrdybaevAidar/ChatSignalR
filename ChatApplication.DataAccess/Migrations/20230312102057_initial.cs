@@ -4,7 +4,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace ChatApplication.DataAccess.Migrations
+namespace ChatMVCApplication.DataAccess.Migrations
 {
     /// <inheritdoc />
     public partial class initial : Migration
@@ -190,11 +190,17 @@ namespace ChatApplication.DataAccess.Migrations
                     Text = table.Column<string>(type: "text", nullable: false),
                     is_read = table.Column<bool>(type: "boolean", nullable: false),
                     user_id = table.Column<int>(type: "int", nullable: false),
-                    chat_id = table.Column<int>(type: "int", nullable: false)
+                    ToUserId = table.Column<int>(type: "int", nullable: true),
+                    ChatId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_messages", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_messages_AspNetUsers_ToUserId",
+                        column: x => x.ToUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "id");
                     table.ForeignKey(
                         name: "FK_messages_AspNetUsers_user_id",
                         column: x => x.user_id,
@@ -202,23 +208,22 @@ namespace ChatApplication.DataAccess.Migrations
                         principalColumn: "id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_messages_chats_chat_id",
-                        column: x => x.chat_id,
+                        name: "FK_messages_chats_ChatId",
+                        column: x => x.ChatId,
                         principalTable: "chats",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "id");
                 });
 
             migrationBuilder.CreateTable(
                 name: "users_chats",
                 columns: table => new
                 {
-                    ChatsId = table.Column<int>(type: "int", nullable: false),
+                    ChatId = table.Column<int>(type: "int", nullable: false),
                     UsersId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_users_chats", x => new { x.ChatsId, x.UsersId });
+                    table.PrimaryKey("PK_users_chats", x => new { x.ChatId, x.UsersId });
                     table.ForeignKey(
                         name: "FK_users_chats_AspNetUsers_UsersId",
                         column: x => x.UsersId,
@@ -226,8 +231,8 @@ namespace ChatApplication.DataAccess.Migrations
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_users_chats_chats_ChatsId",
-                        column: x => x.ChatsId,
+                        name: "FK_users_chats_chats_ChatId",
+                        column: x => x.ChatId,
                         principalTable: "chats",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
@@ -276,9 +281,14 @@ namespace ChatApplication.DataAccess.Migrations
                 column: "user_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_messages_chat_id",
+                name: "IX_messages_ChatId",
                 table: "messages",
-                column: "chat_id");
+                column: "ChatId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_messages_ToUserId",
+                table: "messages",
+                column: "ToUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_messages_user_id",

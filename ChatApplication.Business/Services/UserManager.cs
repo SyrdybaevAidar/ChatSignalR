@@ -1,4 +1,4 @@
-﻿using ChatMVCApplication.Business.UnitOfWork;
+﻿using ChatMVCApplication.Business.Uow;
 
 namespace ChatMVCApplication.Business.Services
 {

@@ -1,4 +1,5 @@
-﻿using ChatMVCApplication.DataAccess.Entities;
+﻿using ChatApplication.DataAccess.Entities;
+using ChatMVCApplication.DataAccess.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -12,7 +13,7 @@ namespace ChatMVCApplication.DataAccess.Entities.Configurations
                 .HasKey(p => p.Id);
 
             builder.HasMany(x => x.Users)
-                .WithMany(x => x.Chats)
+                .WithMany()
                 .UsingEntity(x => x.ToTable("users_chats"));
 
             builder.HasOne(x => x.User)

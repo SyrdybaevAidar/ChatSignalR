@@ -1,0 +1,18 @@
+﻿@model List<ChatMVCApplication.Business.Models.UserDto>
+<div id="plist" class="people-list">
+    <ul class="list-unstyled chat-list mt-2 mb-0">
+        @foreach (var user in Model)
+        {
+
+            <li class="clearfix">
+                <div class="about">
+                    <div class="name">@user.Email</div>
+                    <div class="status"> <i id="@user.Id" class="fa fa-circle offline"></i>@user.LastMessage</div>
+                    <div><a href='@Url.Action("Details", "Chat", new { toUserId = user.Id}, null)'>Открыть чат</a></div>
+                </div>
+            </li>
+        }
+    </ul>
+</div>
+<script src="~/js/signalr/dist/browser/signalr.js"></script>
+<script src="~/js/site.js"></script>

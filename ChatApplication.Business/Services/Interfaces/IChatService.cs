@@ -9,6 +9,8 @@ namespace ChatMVCApplication.Business.Services.Interfaces
 {
     public interface IChatService
     {
-        Task<PrivateChatDto> GetPrivateByIdAsync(int id);
+        Task<PrivateChatDto> GetMessagesByUserIdAsync(int currentUserId, int toUserId);
+        Task<MessageDto> SendMessageAsync(int currentUserId, int toUserId, string text);
+        Task<List<UserDto>> GetAllUsers(int currentUserId);
     }
 }

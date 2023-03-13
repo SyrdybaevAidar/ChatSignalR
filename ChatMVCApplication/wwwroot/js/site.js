@@ -1,33 +1,26 @@
 ﻿"use strict";
 
 var connection = new signalR.HubConnectionBuilder()
-    .withUrl("/chatHub")
+    .withUrl("/userStatus")
     .build();
 
 //Disable the send button until connection is established.
 /*document.getElementById("sendButton").disabled = true;*/
-
-connection.on("ReceiveMessage", function (receiver, message) {
-    var li = document.createElement("li");
-    document.getElementById("messagesList").appendChild(li);
-    // We can assign user-supplied strings to an element's textContent because it
-    // is not interpreted as markup. If you're assigning in any other way, you 
-    // should be aware of possible script injection concerns.
-    li.textContent = `${receiver} ${message}`;
-});
-
 connection.start().then(function () {
-/*    document.getElementById("sendButton").disabled = false;*/
-}).catch(function (err) {
-    return console.error(err.toString());
+});
+connection.on("online", function (userId) {
+    let item = document.getElementById(userId);
+    item.className = "fa fa-circle online";
 });
 
-function sendMessage(toUser) {
-    alert('Всем привет!');
-    var message = document.getElementById("messageInput").value;
+connection.on("offline", function (userId) {
+    let item = document.getElementById(userId);
+    item.className = "fa fa-circle offline";
+});
 
-    connection.invoke("SendMessage", toUser, message).catch(function (err) {
-        return console.error(err.toString());
-    });
-    event.preventDefault();
-}
+connection.on("GetAllOnlineUserIds", function (userIds) {
+    for (const id of userIds) {
+        let item = document.getElementById(id);
+        item.className = "fa fa-circle online";
+    }
+});
