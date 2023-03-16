@@ -28,8 +28,13 @@ namespace ChatMVCApplication.Hubs
         }
 
         public async Task GetMessages(int toUserId, int page) {
-            var chat = await _chatService.GetMessagesByUserIdAsync(CurrentUserId, toUserId, page+1, 15);
-            await Clients.Group(CurrentUserId.ToString()).SendAsync("ReturnMessages", chat.Messages, page+1);
+            var chat = await _chatService.GetMessagesByUserIdAsync(CurrentUserId, toUserId, page+1, 5);
+            bool isLast = chat.Messages.Count < 10;
+            await Clients.Group(CurrentUserId.ToString()).SendAsync("ReturnMessages", chat.Messages, page+1, isLast);
+        }
+
+        public async Task ReadMessages(int toUserId) { 
+            await _chatService.MarkedMessageToReadAsync(CurrentUserId, toUserId);
         }
     }
 }

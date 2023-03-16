@@ -31,19 +31,3 @@ connection.on("GetAllOnlineUserIds", function (userIds) {
         statusName.innerText = "online";
     }
 });
-
-function checkPosition() {
-    const height = document.body.offsetHeight
-    const screenHeight = window.innerHeight
-    const scrolled = window.scrollY
-
-    const threshold = height - screenHeight / 4
-
-    // Отслеживаем, где находится низ экрана относительно страницы:
-    const position = scrolled + screenHeight
-
-    if (position >= threshold) {
-        // Если мы пересекли полосу-порог, вызываем нужное действие.
-    }
-}
-

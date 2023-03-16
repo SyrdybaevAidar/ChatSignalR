@@ -10,14 +10,6 @@
                     <div class="status"> <i id="@user.Id" class="fa fa-circle offline"></i><span id="user-status-@user.Id" span>offline</span></div>
                     <div>
                         <span id="last-message-@user.Id">@user.LastMessage </span>
-                        @if (user.UnreadMessageCount > 0)
-                        {
-                            <span id="count-@user.Id" class="notify-span">@user.UnreadMessageCount</span>
-                        } else
-                        {
-                            <span id="count-@user.Id" class="hidden-unread-message-count">0</span>
-                        }
-
                     </div>
                     <div><a href='@Url.Action("Details", "Chat", new { toUserId = user.Id}, null)'>Открыть чат</a></div>
                 </div>

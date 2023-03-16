@@ -8,9 +8,9 @@
                             <div class="col-lg-6">
                                 <div class="chat-about">
                                     <h6 class="m-b-0">@Model.UserName</h6>
+                                    <button id="pagination-button" type="button" onclick="getMessages(this, @Model.ToUserId)" value="1" class="btn btn-primary">Показать прошлые сообщения</button>
                                 </div>
                             </div>
-                        <button id="pagination-button" onclick="getMessages(this, @Model.ToUserId)" value="1" title="показать еще сообщения"/>
                         </div>
                     </div>
                     <div class="chat-history">
@@ -41,9 +41,10 @@
                         </div>
                     </div>
                 </div>
-<script src="~/js/chat.js"></script>
+<script src="~/js/chat.js">
+</script>
 <script>
-    SetCurrentUserId(@Model.ToUserId);
+    SetUserId(@Model.ToUserId);
 </script>
 @section Scripts {
     @{

@@ -11,6 +11,7 @@ namespace ChatMVCApplication.Business.Services.Interfaces
     {
         Task<PrivateChatDto> GetMessagesByUserIdAsync(int currentUserId, int toUserId, int page, int messagecount);
         Task<MessageDto> SendMessageAsync(int currentUserId, int toUserId, string text);
-        Task<List<UserDto>> GetAllUsers(int currentUserId);
+        Task<List<UserDto>> GetAllUsersAsync(int currentUserId);
+        Task MarkedMessageToReadAsync(int currentUserId, int toUserId);
     }
 }

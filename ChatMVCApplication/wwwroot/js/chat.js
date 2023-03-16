@@ -1,10 +1,5 @@
 ﻿"use strict";
-
 var connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
-let currentUserId = 0;
-function SetCurrentUserId(userId) {
-    currentUserId = userId;
-}
 //Disable send button until connection is established
 
 connection.on("ReceiveMessage", function (message, fromUserId) {
@@ -30,10 +25,9 @@ function getMessages(event, toUserId) {
     }
 }
 
-connection.on("ReturnMessages", function (messages, page) {
+connection.on("ReturnMessages", function (messages, page, isLast) {
     let messagesDiv = document.getElementById("messages");
     let firstMessage = messagesDiv.firstChild;
-
     let paginationButton = document.getElementById("pagination-button");
     paginationButton.value = page;
 
@@ -91,4 +85,6 @@ function appendMessageText(text, isMine) {
     li.appendChild(messageDiv);
     return li;
 }
+
+
 

@@ -14,7 +14,7 @@ namespace ChatMVCApplication.Components
         public async Task<IViewComponentResult> InvokeAsync()
         {
             var currentUserId = int.Parse(ViewContext.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-            var users = await _chatService.GetAllUsers(currentUserId);
+            var users = await _chatService.GetAllUsersAsync(currentUserId);
             return View(users);
         }
     }

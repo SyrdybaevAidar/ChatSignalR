@@ -53,8 +53,9 @@ namespace ChatMVCApplication.Business.Services
             return _mapper.Map<MessageDto>(messageEntry.Entity);
         }
 
-        public async Task<List<UserDto>> GetAllUsers(int currentUserId) { 
+        public async Task<List<UserDto>> GetAllUsersAsync(int currentUserId) { 
             var users = await _uow.GetRepository<User>()
+                .Where(x => x.Id != currentUserId)
                 .Where(x => x.Messages.Any(x => x.ToUserId == currentUserId || x.UserId == currentUserId))
                 .Include(x => x.Messages.OrderByDescending(x => x.CreateDate).Take(1))
                 .ToListAsync();
@@ -62,9 +63,9 @@ namespace ChatMVCApplication.Business.Services
             return _mapper.Map<List<UserDto>>(users);
         }
 
-        public async Task MarkedMessageToReadAsync(int currentUserId, List<int> messageIds) {
+        public async Task MarkedMessageToReadAsync(int currentUserId, int toUserId) {
             var messages = await _uow.GetRepository<Message>()
-                .Where(x => x.ToUserId == currentUserId && messageIds.Contains(x.Id))
+                .Where(x => x.ToUserId == currentUserId && x.UserId == toUserId)
                 .ToListAsync();
 
             messages.ForEach(message => { 
