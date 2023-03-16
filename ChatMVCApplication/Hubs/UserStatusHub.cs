@@ -18,11 +18,12 @@ namespace ChatMVCApplication.Hubs
         public override async Task OnConnectedAsync()
         {   
             var currentUserId = Context.User!.FindFirstValue(ClaimTypes.NameIdentifier)!;
+            await Clients.Client(Context.ConnectionId).SendAsync("GetAllOnlineUserIds", _onlineUsersService.UserIds);
+
             _onlineUsersService.UserIds.Add(currentUserId);
 
             await Groups.AddToGroupAsync(Context.ConnectionId, currentUserId);
             await Clients.All.SendAsync("Online", currentUserId);
-            await Clients.Client(Context.ConnectionId).SendAsync("GetAllOnlineUserIds", _onlineUsersService.UserIds);
             await base.OnConnectedAsync();
         }
 

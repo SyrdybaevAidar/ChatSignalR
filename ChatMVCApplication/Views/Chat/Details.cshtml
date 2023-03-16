@@ -20,18 +20,12 @@
                                 if (message.IsMineMessage)
                                 {
                                     <li class="clearfix">
-                                        <div class="message-data content-left">
-                                            <span class="message-data-time">@message.CreateDate</span>
-                                        </div>
                                         <div class="message my-message">@message.Text</div>
                                     </li>
                                 }
                                 else
                                 {
                                     <li class="clearfix">
-                                        <div class="message-data content-right">
-                                            <span class="message-data-time">@message.CreateDate</span>
-                                        </div>
                                         <div class="message other-message float-right"> @message.Text</div>
                                     </li>
                                 }

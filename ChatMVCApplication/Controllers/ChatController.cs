@@ -17,7 +17,7 @@ namespace ChatMVCApplication.Controllers
         }
 
         public async Task<IActionResult> Details(int toUserId) {
-            var messages = await _chatService.GetMessagesByUserIdAsync(CurrentUserId, toUserId, 1, 1);
+            var messages = await _chatService.GetMessagesByUserIdAsync(CurrentUserId, toUserId, 1, 15);
             return View(messages);
         }
     }

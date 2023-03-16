@@ -1,10 +1,8 @@
 ﻿using AutoMapper;
-using ChatApplication.DataAccess.Entities;
 using ChatMVCApplication.Business.Models;
 using ChatMVCApplication.Business.Services.Interfaces;
 using ChatMVCApplication.Business.Uow;
 using ChatMVCApplication.DataAccess.Entities;
-using ChatMVCApplication.DataAccess.Types;
 using Microsoft.EntityFrameworkCore;
 
 namespace ChatMVCApplication.Business.Services
@@ -57,8 +55,8 @@ namespace ChatMVCApplication.Business.Services
 
         public async Task<List<UserDto>> GetAllUsers(int currentUserId) { 
             var users = await _uow.GetRepository<User>()
-                .Where(x => x.Id != currentUserId)
-                .Include(x => x.Messages.Where(x => x.ToUserId == currentUserId || x.UserId == currentUserId).OrderByDescending(x => x.CreateDate).Take(1))
+                .Where(x => x.Messages.Any(x => x.ToUserId == currentUserId || x.UserId == currentUserId))
+                .Include(x => x.Messages.OrderByDescending(x => x.CreateDate).Take(1))
                 .ToListAsync();
 
             return _mapper.Map<List<UserDto>>(users);

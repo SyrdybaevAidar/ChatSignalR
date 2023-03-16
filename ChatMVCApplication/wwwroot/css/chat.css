@@ -31,7 +31,8 @@
     -moz-transition: .5s;
     -o-transition: .5s;
     -webkit-transition: .5s;
-    transition: .5s
+    transition: .5s;
+    background-color: white;
 }
 
 .people-list .chat-list li {

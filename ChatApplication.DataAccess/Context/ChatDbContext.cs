@@ -15,7 +15,6 @@ namespace ChatMVCApplication.DataAccess.Context
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.ApplyConfiguration(new UserConfiguration());
-            builder.ApplyConfiguration(new ChatConfiguration());
             builder.ApplyConfiguration(new MessageConfiguration());
             base.OnModelCreating(builder);
         }
